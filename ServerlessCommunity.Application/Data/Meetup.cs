@@ -28,7 +28,7 @@ namespace ServerlessCommunity.Application.Data
 
         public string Title { get; set; }
 
-        public int AttendanceFee { get; set; }
+        public int? AttendanceFee { get; set; }
         public string AttendanceFeeCurency { get; set; }
         public string AttendanceFeeDescription { get; set; }
 
