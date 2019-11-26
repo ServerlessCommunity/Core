@@ -4,9 +4,9 @@ using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using ServerlessCommunity.Application.Command.Collect;
 using ServerlessCommunity.Config;
-using ServerlessCommunity.AzFunc._Extensions;
-using ServerlessCommunity.Data.AzStorage.Table;
+using ServerlessCommunity.Data.AzStorage.Queue.Service;
 using ServerlessCommunity.Data.AzStorage.Table.Model;
+using ServerlessCommunity.Data.AzStorage.Table.Service;
 
 namespace ServerlessCommunity.AzFunc.Listener
 {
@@ -22,18 +22,24 @@ namespace ServerlessCommunity.AzFunc.Listener
             [Queue(QueueName.CollectCalendarPage)]CloudQueue calendarQueue,
             [Queue(QueueName.CollectHomePage)]CloudQueue homepageQueue)
         {
-            var meetups = await meetupTable.GetQueryResultsAsync<Meetup>();
+            var meetupService = new MeetupService(meetupTable);
+
+            var collectMeetupService = new CommandQueueService(meetupQueue);
+            var collectCalendarService = new CommandQueueService(calendarQueue);
+            var collectHomepageService = new CommandQueueService(homepageQueue);
+            
+            var meetups = await meetupService.GetMeetupsAsync();
 
             foreach (var meetup in meetups)
             {
-                await meetupQueue.AddMessageAsync(new CollectMeetupPageData
+                await collectMeetupService.SubmitCommandAsync(new CollectMeetupPageData
                 {
                     MeetupId = meetup.Id
-                }.ToQueueMessage());
+                });
             }
 
-            await calendarQueue.AddMessageAsync(new CollectCalendarPageData().ToQueueMessage());
-            await homepageQueue.AddMessageAsync(new CollectHomePageData().ToQueueMessage());
+            await collectCalendarService.SubmitCommandAsync(new CollectCalendarPageData());
+            await collectHomepageService.SubmitCommandAsync(new CollectHomePageData());
         }
     }
 }

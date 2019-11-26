@@ -8,8 +8,4 @@
       <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.2" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Data\Service" />
-    </ItemGroup>
-
 </Project>

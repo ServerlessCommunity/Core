@@ -5,9 +5,5 @@ namespace ServerlessCommunity.Application.Command
 {
     public abstract class CommandBase
     {
-        public CloudQueueMessage ToQueueMessage()
-        {
-            return new CloudQueueMessage(JsonConvert.SerializeObject(this));
-        }
     }
 }

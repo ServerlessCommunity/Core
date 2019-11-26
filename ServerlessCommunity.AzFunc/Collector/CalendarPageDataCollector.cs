@@ -12,14 +12,15 @@ using ServerlessCommunity.Application.Command.Render;
 using ServerlessCommunity.Application.ViewModel.Calendar;
 using ServerlessCommunity.Application.ViewModel.Meetup;
 using ServerlessCommunity.Config;
-using ServerlessCommunity.AzFunc._Extensions;
-using ServerlessCommunity.Data.AzStorage.Table;
-using ServerlessCommunity.Data.AzStorage.Table.Model;
+using ServerlessCommunity.Data.AzStorage.Queue.Service;
+using ServerlessCommunity.Data.AzStorage.Table.Service;
 
 namespace ServerlessCommunity.AzFunc.Collector
 {
     public static class CalendarPageDataCollector
     {
+        private const string PageDataBlobUrl = "/calendar.json";
+        
         [FunctionName(nameof(CalendarPageDataCollector))]
         public static async Task CollectCalendarPageDataFunction(
             [QueueTrigger(QueueName.CollectCalendarPage)]CollectCalendarPageData command,
@@ -30,27 +31,34 @@ namespace ServerlessCommunity.AzFunc.Collector
             [Table(TableName.Speaker)] CloudTable speakerTable,
             [Table(TableName.Venue)] CloudTable venueTable,
             
-            [Blob(ContainerName.PageData + "/calendar.json", FileAccess.Write)]CloudBlockBlob calendarPageDataBlob,
+            [Blob(ContainerName.PageData + PageDataBlobUrl, FileAccess.Write)]CloudBlockBlob calendarPageDataBlob,
             [Queue(QueueName.RenderPage)]CloudQueue renderQueue,
             
             ILogger log)
         {
+            var meetupService = new MeetupService(meetupTable);
+            var venueService = new VenueService(venueTable);
+            var meetupSessionService = new MeetupSessionService(meetupSessionTable);
+            var sessionService = new SessionService(sessionTable);
+            var speakerService = new SpeakerService(speakerTable);
+
+            var renderService = new CommandQueueService(renderQueue);
+            
+            
             var calendarPageModel = new CalendarPage();
 
-            var meetups = (await meetupTable.GetQueryResultsAsync<Meetup>())
-                .OrderByDescending(x => x.Year)
-                .ThenByDescending(x => x.Month)
-                .ThenByDescending(x => x.Day)
+            var meetups = (await meetupService.GetMeetupsAsync())
                 .GroupBy(x => x.Year, (key, elements) => new
                 {
                     year = key,
                     meetups = elements
                 })
                 .ToDictionary(x => x.year, element => element.meetups);
-            var meetupSessions = await meetupSessionTable.GetQueryResultsAsync<MeetupSession>();
-            var sessions = await sessionTable.GetQueryResultsAsync<Session>();
-            var speakers = await speakerTable.GetQueryResultsAsync<Speaker>();
-            var venues = await venueTable.GetQueryResultsAsync<Venue>();
+
+            var meetupSessions = await meetupSessionService.GetMeetupSessionsAsync();
+            var sessions = await sessionService.GetSessionsAsync();
+            var speakers = await speakerService.GetSpeakersAsync();
+            var venues = await venueService.GetVenuesAsync();
 
             calendarPageModel.Years = meetups.Keys.ToArray();
             calendarPageModel.CalendarYears = meetups.Values.Select(x =>
@@ -99,11 +107,11 @@ namespace ServerlessCommunity.AzFunc.Collector
             
             var renderCommand = new RenderPage
             {
-                DataInstanceId = "calendar.json",
+                DataInstanceId = command.DataInstanceId,
                 PublicUrl = calendarPageModel.PublicUrl,
                 TemplateId = CalendarPage.TemplateId
             };
-            await renderQueue.AddMessageAsync(renderCommand.ToQueueMessage());
+            await renderService.SubmitCommandAsync(renderCommand);
         }
     }
 }

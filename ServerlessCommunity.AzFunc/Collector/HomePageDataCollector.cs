@@ -11,14 +11,12 @@ using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using ServerlessCommunity.Application.Command.Collect;
 using ServerlessCommunity.Application.Command.Render;
-using ServerlessCommunity.Application.Data;
 using ServerlessCommunity.Application.Data.Model;
 using ServerlessCommunity.Application.ViewModel.Home;
 using ServerlessCommunity.Application.ViewModel.Meetup;
 using ServerlessCommunity.Config;
-using ServerlessCommunity.AzFunc._Extensions;
-using ServerlessCommunity.Data.AzStorage.Table;
-using ServerlessCommunity.Data.AzStorage.Table.Model;
+using ServerlessCommunity.Data.AzStorage.Queue.Service;
+using ServerlessCommunity.Data.AzStorage.Table.Service;
 
 namespace ServerlessCommunity.AzFunc.Collector
 {
@@ -36,24 +34,32 @@ namespace ServerlessCommunity.AzFunc.Collector
             [Table(TableName.Session)] CloudTable sessionTable,
             [Table(TableName.Speaker)] CloudTable speakerTable,
             [Table(TableName.Venue)] CloudTable venueTable,
+            [Table(TableName.Partner)] CloudTable partnerTable,
             
             [Blob(ContainerName.PageData + "/index.json", FileAccess.Write)]CloudBlockBlob homePageDataBlob,
             [Queue(QueueName.RenderPage)]CloudQueue renderQueue,
             
             ILogger log)
         {
+            var meetupService = new MeetupService(meetupTable);
+            var venueService = new VenueService(venueTable);
+            var meetupSessionService = new MeetupSessionService(meetupSessionTable);
+            var sessionService = new SessionService(sessionTable);
+            var speakerService = new SpeakerService(speakerTable);
+            var partnerService = new PartnerService(partnerTable);
+
+            var renderService = new CommandQueueService(renderQueue);
+            
+            
             var homePageModel = new HomePage();
 
-            var date = DateTime.UtcNow.AddHours(TimeZoneOffset);            
-            var meetups = (await meetupTable.GetQueryResultsAsync<Meetup>())
-                .Where(x => x.Year >= date.Year 
-                            && x.Month >= date.Month
-                            && x.Day >= date.Day)
-                .OrderByDescending(x => x.Year)
-                .ThenByDescending(x => x.Month)
-                .ThenByDescending(x => x.Day)
-                .Take(TopMeetups)
-                .ToArray();
+            var date = DateTime.UtcNow.AddHours(TimeZoneOffset);
+            var meetups = await meetupService.GetMeetupsUpcomingAsync(TopMeetups, date);
+
+            var venues = await venueService.GetVenuesByIdsAsync(meetups.Select(x => x.VenueId));
+            var agendaItems = await meetupSessionService.GetMeetupSessionsByMeetupIdsAsync(meetups.Select(x => x.Id));
+            var sessions = await sessionService.GetSessionsByIdsAsync(agendaItems.Select(x => x.SessionId));
+            var speakers = await speakerService.GetSpeakersByIdsAsync(sessions.Select(x => x.SpeakerId));
 
             var meetupPages = new List<MeetupPage>();
             foreach (var meetup in meetups)
@@ -68,35 +74,23 @@ namespace ServerlessCommunity.AzFunc.Collector
                     IsOpened = true,
                     Url = null
                 };
-                
-                meetupPage.Venue = (await venueTable.GetQueryResultsAsync<Venue>(
-                        string.Empty, 
-                        meetupPage.Meetup.VenueId.ToString("N")))
-                    .Single();
-                
-                var meetupSessions = (await meetupSessionTable.GetQueryResultsAsync<MeetupSession>(
-                        meetupPage.Meetup.Id.ToString("N")))
-                    .OrderBy(x => x.OrderN)
-                    .ToList();
-                
-                var agenda = new List<MeetupAgenda>();
-                foreach (var meetupSession in meetupSessions)
-                {
-                    var sessionInfo = (await sessionTable.GetQueryResultsAsync<Session>(
-                            rowKey: meetupSession.SessionId.ToString("N")))
-                        .Single();
 
-                    var speakerInfo = (await speakerTable.GetQueryResultsAsync<Speaker>(
-                            rowKey: sessionInfo.SpeakerId.ToString("N")))
-                        .Single();
+                meetupPage.Venue = venues.Single(x => x.Id == meetup.VenueId);
                 
-                    agenda.Add(new MeetupAgenda
+                var agenda = agendaItems
+                    .Where(x => x.MeetupId == meetup.Id)
+                    .Select(a =>
                     {
-                        MeetupSession = meetupSession,
-                        Session = sessionInfo,
-                        Speaker = speakerInfo
+                        var y = new MeetupAgenda
+                        {
+                            MeetupSession = a,
+                            Session = sessions.Single(x => x.Id == a.SessionId)
+                        };
+
+                        y.Speaker = speakers.Single(x => x.Id == y.Session.SpeakerId);
+
+                        return y;
                     });
-                }
                 
                 meetupPage.Sessions = agenda.ToArray();
                 
@@ -105,23 +99,21 @@ namespace ServerlessCommunity.AzFunc.Collector
 
             homePageModel.Meetups = meetupPages.ToArray();
 
-            homePageModel.Speakers = (await speakerTable.GetHighlightedAsync<Speaker>())
-                .OrderBy(x => x.FirstName)
-                .ThenBy(x => x.LastName)
+            homePageModel.Speakers = (await speakerService.GetSpeakersHighlightedAsync())
                 .ToArray();
 
-            homePageModel.Partners = (await speakerTable.GetHighlightedAsync<Partner>())
-                .OrderBy(x => x.Title)
+            homePageModel.Partners = (await partnerService.GetPartnersHighlightedAsync())
                 .ToArray();
             
             await homePageDataBlob.UploadTextAsync(JsonConvert.SerializeObject(homePageModel));
+            
             var renderCommand = new RenderPage
             {
-                DataInstanceId = "index.json",
+                DataInstanceId = command.DataInstanceId,
                 PublicUrl = homePageModel.PublicUrl,
                 TemplateId = HomePage.TemplateId
             };
-            await renderQueue.AddMessageAsync(renderCommand.ToQueueMessage());
+            await renderService.SubmitCommandAsync(renderCommand);
         }
     }
 }

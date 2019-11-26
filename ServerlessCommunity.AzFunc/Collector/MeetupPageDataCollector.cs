@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,18 +9,18 @@ using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using ServerlessCommunity.Application.Command.Collect;
 using ServerlessCommunity.Application.Command.Render;
-using ServerlessCommunity.Application.Data;
 using ServerlessCommunity.Application.Data.Model;
 using ServerlessCommunity.Application.ViewModel.Meetup;
 using ServerlessCommunity.Config;
-using ServerlessCommunity.AzFunc._Extensions;
-using ServerlessCommunity.Data.AzStorage.Table;
-using ServerlessCommunity.Data.AzStorage.Table.Model;
+using ServerlessCommunity.Data.AzStorage.Queue.Service;
+using ServerlessCommunity.Data.AzStorage.Table.Service;
 
 namespace ServerlessCommunity.AzFunc.Collector
 {
     public static class MeetupPageDataCollector
     {
+        private const string PageDataBlobUrl = "/meetup-{" + nameof(CollectMeetupPageData.MeetupId) + "}.json";
+        
         [FunctionName(nameof(MeetupPageDataCollector))]
         public static async Task CollectMeetupPageDataFunction(
             [QueueTrigger(QueueName.CollectMeetupPage)]CollectMeetupPageData command,
@@ -32,64 +31,58 @@ namespace ServerlessCommunity.AzFunc.Collector
             [Table(TableName.Speaker)] CloudTable speakerTable,
             [Table(TableName.Venue)] CloudTable venueTable,
             
-            [Blob(ContainerName.PageData + "/meetup-{" + nameof(CollectMeetupPageData.MeetupId) + "}.json", FileAccess.Write)]CloudBlockBlob meetupPageDataBlob,
+            [Blob(ContainerName.PageData + PageDataBlobUrl, FileAccess.Write)]CloudBlockBlob meetupPageDataBlob,
             [Queue(QueueName.RenderPage)]CloudQueue renderQueue,
             
             ILogger log)
         {
-            var meetupPageModel = new MeetupPage();
-            meetupPageModel.Registration = new MeetupRegistration
+            var meetupService = new MeetupService(meetupTable);
+            var venueService = new VenueService(venueTable);
+            var meetupSessionService = new MeetupSessionService(meetupSessionTable);
+            var sessionService = new SessionService(sessionTable);
+            var speakerService = new SpeakerService(speakerTable);
+
+            var renderService = new CommandQueueService(renderQueue);
+            
+            var meetupPageViewModel = new MeetupPage();
+            meetupPageViewModel.Registration = new MeetupRegistration
             {
                 IsOpened = true,
                 Url = null
             };
-            meetupPageModel.Meetup = 
-                (await meetupTable.GetQueryResultsAsync<Meetup>(
-                    rowKey: command.MeetupId.ToString("N")))
-                .Single();
-            meetupPageModel.Venue = (await venueTable.GetQueryResultsAsync<Venue>(
-                    string.Empty, 
-                    meetupPageModel.Meetup.VenueId.ToString("N")))
-                .Single();
             
-            
-            var meetupSessions = (await meetupSessionTable.GetQueryResultsAsync<MeetupSession>(
-                    command.MeetupId.ToString("N")))
-                .OrderBy(x => x.OrderN)
-                .ToList();
+            meetupPageViewModel.Meetup = await meetupService.GetMeetupByIdAsync(command.MeetupId);
+            meetupPageViewModel.Venue = await venueService.GetVenueByIdAsync(meetupPageViewModel.Meetup.VenueId);
 
-            var agenda = new List<MeetupAgenda>();
-            foreach (var meetupSession in meetupSessions)
+
+            var meetupAgendaItems = await meetupSessionService.GetMeetupSessionsByMeetupIdAsync(meetupPageViewModel.Meetup.Id);
+            var sessions = await sessionService.GetSessionsByIdsAsync(meetupAgendaItems.Select(x => x.SessionId));
+            var speakers = await speakerService.GetSpeakersByIdsAsync(sessions.Select(x => x.SpeakerId));
+
+            meetupPageViewModel.Sessions = meetupAgendaItems.Select(x =>
             {
-                var sessionInfo = (await sessionTable.GetQueryResultsAsync<Session>(
-                        rowKey: meetupSession.SessionId.ToString("N")))
-                    .Single();
-
-                var speakerInfo = (await speakerTable.GetQueryResultsAsync<Speaker>(
-                        rowKey: sessionInfo.SpeakerId.ToString("N")))
-                    .Single();
-                
-                agenda.Add(new MeetupAgenda
+                var agenda = new MeetupAgenda
                 {
-                    MeetupSession = meetupSession,
-                    Session = sessionInfo,
-                    Speaker = speakerInfo
-                });
-            }
+                    MeetupSession = x,
+                    Session = sessions.Single(s => s.Id == x.SessionId)
+                };
 
-            meetupPageModel.Sessions = agenda.ToArray();
+                agenda.Speaker = speakers.Single(s => s.Id == agenda.Session.SpeakerId);
+
+                return agenda;
+            }).ToArray();
             
-            meetupPageModel.Partners = new IPartner[0];
+            meetupPageViewModel.Partners = new IPartner[0];
 
-            await meetupPageDataBlob.UploadTextAsync(JsonConvert.SerializeObject(meetupPageModel));
+            await meetupPageDataBlob.UploadTextAsync(JsonConvert.SerializeObject(meetupPageViewModel));
             
             var renderCommand = new RenderPage
             {
-                DataInstanceId = $"meetup-{command.MeetupId}.json",
-                PublicUrl = meetupPageModel.PublicUrl,
+                DataInstanceId = command.DataInstanceId,
+                PublicUrl = meetupPageViewModel.PublicUrl,
                 TemplateId = MeetupPage.TemplateId
             };
-            await renderQueue.AddMessageAsync(renderCommand.ToQueueMessage());
+            await renderService.SubmitCommandAsync(renderCommand);
         }
     }
 }

@@ -1,4 +1,4 @@
-using ServerlessCommunity.Application.Data;
+using System.Collections.Generic;
 using ServerlessCommunity.Application.Data.Model;
 using ServerlessCommunity.Application.ViewModel.Meetup;
 

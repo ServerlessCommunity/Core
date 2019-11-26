@@ -5,16 +5,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Queue" />
-      <Folder Include="Table\Service" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.2" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\ServerlessCommunity.Application\ServerlessCommunity.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Blob" />
     </ItemGroup>
 
 </Project>
