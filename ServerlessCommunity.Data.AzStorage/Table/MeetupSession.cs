@@ -1,12 +1,13 @@
 using System;
 using Microsoft.WindowsAzure.Storage.Table;
+using ServerlessCommunity.Application.Data;
 
-namespace ServerlessCommunity.Application.Data
+namespace ServerlessCommunity.Data.AzStorage.Table
 {
-    public class MeetupPartner : TableEntity
+    public class MeetupSession : TableEntity, IMeetupSession
     {
         [IgnoreProperty]
-        public Guid Id
+        public Guid SessionId
         {
             get => Guid.Parse(RowKey);
             set => RowKey = value.ToString("N");
@@ -18,5 +19,7 @@ namespace ServerlessCommunity.Application.Data
             get => Guid.Parse(PartitionKey);
             set => PartitionKey = value.ToString("N");
         }
+        
+        public int OrderN { get; set; }
     }
 }

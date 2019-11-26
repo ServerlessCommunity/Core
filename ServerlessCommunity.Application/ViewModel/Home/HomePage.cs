@@ -7,9 +7,9 @@ namespace ServerlessCommunity.Application.ViewModel.Home
     {
         public MeetupPage[] Meetups { get; set; }
 
-        public Speaker[] Speakers { get; set; }
+        public ISpeaker[] Speakers { get; set; }
 
-        public Partner[] Partners { get; set; }
+        public IPartner[] Partners { get; set; }
         
         public string PublicUrl => "index.html";
         public const string TemplateId = "index.hjs";

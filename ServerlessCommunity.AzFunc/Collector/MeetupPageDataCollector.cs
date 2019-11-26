@@ -14,6 +14,7 @@ using ServerlessCommunity.Application.Data;
 using ServerlessCommunity.Application.ViewModel.Meetup;
 using ServerlessCommunity.Config;
 using ServerlessCommunity.AzFunc._Extensions;
+using ServerlessCommunity.Data.AzStorage.Table;
 
 namespace ServerlessCommunity.AzFunc.Collector
 {
@@ -76,7 +77,7 @@ namespace ServerlessCommunity.AzFunc.Collector
 
             meetupPageModel.Sessions = agenda.ToArray();
             
-            meetupPageModel.Partners = new Partner[0];
+            meetupPageModel.Partners = new IPartner[0];
 
             await meetupPageDataBlob.UploadTextAsync(JsonConvert.SerializeObject(meetupPageModel));
             

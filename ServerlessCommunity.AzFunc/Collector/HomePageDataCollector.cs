@@ -16,6 +16,7 @@ using ServerlessCommunity.Application.ViewModel.Home;
 using ServerlessCommunity.Application.ViewModel.Meetup;
 using ServerlessCommunity.Config;
 using ServerlessCommunity.AzFunc._Extensions;
+using ServerlessCommunity.Data.AzStorage.Table;
 
 namespace ServerlessCommunity.AzFunc.Collector
 {
@@ -97,7 +98,7 @@ namespace ServerlessCommunity.AzFunc.Collector
                 
                 meetupPage.Sessions = agenda.ToArray();
                 
-                meetupPage.Partners = new Partner[0];
+                meetupPage.Partners = new IPartner[0];
             }
 
             homePageModel.Meetups = meetupPages.ToArray();

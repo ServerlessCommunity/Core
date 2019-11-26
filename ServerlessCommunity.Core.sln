@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessCommunity.Config"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessCommunity.Application", "ServerlessCommunity.Application\ServerlessCommunity.Application.csproj", "{4BE8E236-CDD9-4CA8-8DBB-D1567C70731D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessCommunity.Data.AzStorage", "ServerlessCommunity.Data.AzStorage\ServerlessCommunity.Data.AzStorage.csproj", "{B1976AD1-1B37-4FBE-B8BB-2408A9124B1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{4BE8E236-CDD9-4CA8-8DBB-D1567C70731D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BE8E236-CDD9-4CA8-8DBB-D1567C70731D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BE8E236-CDD9-4CA8-8DBB-D1567C70731D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1976AD1-1B37-4FBE-B8BB-2408A9124B1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1976AD1-1B37-4FBE-B8BB-2408A9124B1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1976AD1-1B37-4FBE-B8BB-2408A9124B1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1976AD1-1B37-4FBE-B8BB-2408A9124B1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

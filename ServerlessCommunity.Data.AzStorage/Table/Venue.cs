@@ -1,9 +1,10 @@
 using System;
 using Microsoft.WindowsAzure.Storage.Table;
+using ServerlessCommunity.Application.Data;
 
-namespace ServerlessCommunity.Application.Data
+namespace ServerlessCommunity.Data.AzStorage.Table
 {
-    public class Venue : TableEntity
+    public class Venue : TableEntity, IVenue
     {
         [IgnoreProperty]
         public Guid Id

@@ -22,5 +22,6 @@
     <ItemGroup>
       <ProjectReference Include="..\ServerlessCommunity.Application\ServerlessCommunity.Application.csproj" />
       <ProjectReference Include="..\ServerlessCommunity.Config\ServerlessCommunity.Config.csproj" />
+      <ProjectReference Include="..\ServerlessCommunity.Data.AzStorage\ServerlessCommunity.Data.AzStorage.csproj" />
     </ItemGroup>
 </Project>

@@ -3,9 +3,9 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using ServerlessCommunity.Application.Command.Collect;
-using ServerlessCommunity.Application.Data;
 using ServerlessCommunity.Config;
 using ServerlessCommunity.AzFunc._Extensions;
+using ServerlessCommunity.Data.AzStorage.Table;
 
 namespace ServerlessCommunity.AzFunc.Listener
 {

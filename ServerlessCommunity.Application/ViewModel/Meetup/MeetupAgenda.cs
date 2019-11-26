@@ -4,8 +4,8 @@ namespace ServerlessCommunity.Application.ViewModel.Meetup
 {
     public class MeetupAgenda
     {
-        public MeetupSession MeetupSession { get; set; }
-        public Session Session { get; set; }
-        public Speaker Speaker { get; set; }
+        public IMeetupSession MeetupSession { get; set; }
+        public ISession Session { get; set; }
+        public ISpeaker Speaker { get; set; }
     }
 }

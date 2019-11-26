@@ -27,7 +27,7 @@ namespace ServerlessCommunity.AzFunc.Registration
                 inputForm = JsonConvert.DeserializeObject(await reader.ReadToEndAsync());
             }
             
-            var registration = new Application.Data.Registration();
+            var registration = new Data.AzStorage.Table.Registration();
             registration.Id = Guid.NewGuid();
             
             registration.Email = inputForm.Email;

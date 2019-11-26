@@ -1,9 +1,10 @@
 using System;
 using Microsoft.WindowsAzure.Storage.Table;
+using ServerlessCommunity.Application.Data;
 
-namespace ServerlessCommunity.Application.Data
+namespace ServerlessCommunity.Data.AzStorage.Table
 {
-    public class Registration : TableEntity
+    public class Registration : TableEntity, IRegistration
     {
         [IgnoreProperty]
         public Guid Id
