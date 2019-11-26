@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using ServerlessCommunity.Application.Command.Collect;
 using ServerlessCommunity.Application.Command.Render;
 using ServerlessCommunity.Application.Data;
-using ServerlessCommunity.Application.Model.Meetup;
+using ServerlessCommunity.Application.ViewModel.Meetup;
 using ServerlessCommunity.Config;
 using ServerlessCommunity.AzFunc._Extensions;
 

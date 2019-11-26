@@ -1,7 +1,7 @@
 using ServerlessCommunity.Application.Data;
-using ServerlessCommunity.Application.Model.Meetup;
+using ServerlessCommunity.Application.ViewModel.Meetup;
 
-namespace ServerlessCommunity.Application.Model.Home
+namespace ServerlessCommunity.Application.ViewModel.Home
 {
     public class HomePage
     {

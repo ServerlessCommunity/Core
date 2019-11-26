@@ -1,6 +1,6 @@
-using ServerlessCommunity.Application.Model.Meetup;
+using ServerlessCommunity.Application.ViewModel.Meetup;
 
-namespace ServerlessCommunity.Application.Model.Calendar
+namespace ServerlessCommunity.Application.ViewModel.Calendar
 {
     public class CalendarYear
     {

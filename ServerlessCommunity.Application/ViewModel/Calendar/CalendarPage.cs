@@ -1,4 +1,4 @@
-namespace ServerlessCommunity.Application.Model.Calendar
+namespace ServerlessCommunity.Application.ViewModel.Calendar
 {
     public class CalendarPage
     {

@@ -1,4 +1,4 @@
-namespace ServerlessCommunity.Application.Model.Meetup
+namespace ServerlessCommunity.Application.ViewModel.Meetup
 {
     public class MeetupRegistration
     {
