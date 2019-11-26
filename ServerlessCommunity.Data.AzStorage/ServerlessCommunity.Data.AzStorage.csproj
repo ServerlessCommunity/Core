@@ -6,7 +6,7 @@
 
     <ItemGroup>
       <Folder Include="Queue" />
-      <Folder Include="Table\Context" />
+      <Folder Include="Table\Service" />
     </ItemGroup>
 
     <ItemGroup>

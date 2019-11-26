@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using ServerlessCommunity.Application.Command.Collect;
 using ServerlessCommunity.Application.Command.Render;
 using ServerlessCommunity.Application.Data;
+using ServerlessCommunity.Application.Data.Model;
 using ServerlessCommunity.Application.ViewModel.Home;
 using ServerlessCommunity.Application.ViewModel.Meetup;
 using ServerlessCommunity.Config;

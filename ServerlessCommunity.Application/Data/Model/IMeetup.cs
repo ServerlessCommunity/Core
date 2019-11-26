@@ -1,6 +1,6 @@
 using System;
 
-namespace ServerlessCommunity.Application.Data
+namespace ServerlessCommunity.Application.Data.Model
 {
     public interface IMeetup
     {

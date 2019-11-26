@@ -1,4 +1,5 @@
 using ServerlessCommunity.Application.Data;
+using ServerlessCommunity.Application.Data.Model;
 
 namespace ServerlessCommunity.Application.ViewModel.Meetup
 {

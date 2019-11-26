@@ -1,6 +1,7 @@
 using System;
 using Microsoft.WindowsAzure.Storage.Table;
 using ServerlessCommunity.Application.Data;
+using ServerlessCommunity.Application.Data.Model;
 
 namespace ServerlessCommunity.Data.AzStorage.Table.Model
 {

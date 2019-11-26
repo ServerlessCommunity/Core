@@ -1,10 +1,11 @@
 using ServerlessCommunity.Application.Data;
+using ServerlessCommunity.Application.Data.Model;
 
 namespace ServerlessCommunity.Application.ViewModel.Meetup
 {
     public class MeetupPage
     {
-        public Data.IMeetup Meetup { get; set; }
+        public IMeetup Meetup { get; set; }
         public IVenue Venue { get; set; }
         public MeetupAgenda[] Sessions { get; set; }
         public MeetupRegistration Registration { get; set; }
