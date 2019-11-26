@@ -13,9 +13,9 @@ using ServerlessCommunity.Application.Command.Render;
 using ServerlessCommunity.Application.Data;
 using ServerlessCommunity.Application.Model.Meetup;
 using ServerlessCommunity.Config;
-using ServerlessCommunity.Core.AzFunc._Extensions;
+using ServerlessCommunity.AzFunc._Extensions;
 
-namespace ServerlessCommunity.Core.AzFunc.Collector
+namespace ServerlessCommunity.AzFunc.Collector
 {
     public static class MeetupPageDataCollector
     {

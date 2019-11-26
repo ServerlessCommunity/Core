@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace ServerlessCommunity.Core.AzFunc._Extensions
+namespace ServerlessCommunity.AzFunc._Extensions
 {
     public static class CloudTableExtensions
     {

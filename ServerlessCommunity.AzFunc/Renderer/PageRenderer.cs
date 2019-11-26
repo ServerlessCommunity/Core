@@ -9,7 +9,7 @@ using ServerlessCommunity.Application.Command.Render;
 using ServerlessCommunity.Config;
 using ZetaProducerHtmlCompressor.Internal;
 
-namespace ServerlessCommunity.Core.AzFunc.Renderer
+namespace ServerlessCommunity.AzFunc.Renderer
 {
     public static class PageRenderer
     {

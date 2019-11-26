@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessCommunity.Core.AzFunc", "ServerlessCommunity.Core.AzFunc\ServerlessCommunity.Core.AzFunc.csproj", "{EF85D5C4-B4FF-408A-BC7A-0C680E802951}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessCommunity.AzFunc", "ServerlessCommunity.AzFunc\ServerlessCommunity.AzFunc.csproj", "{EF85D5C4-B4FF-408A-BC7A-0C680E802951}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessCommunity.Config", "ServerlessCommunity.Config\ServerlessCommunity.Config.csproj", "{5CFC4D5F-7ED7-4632-A788-E8B213403C9F}"
 EndProject

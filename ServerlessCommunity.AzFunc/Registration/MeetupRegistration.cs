@@ -9,7 +9,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using ServerlessCommunity.Config;
 
-namespace ServerlessCommunity.Core.AzFunc.Registration
+namespace ServerlessCommunity.AzFunc.Registration
 {
     public static class MeetupRegistration
     {

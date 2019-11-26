@@ -5,9 +5,9 @@ using Microsoft.WindowsAzure.Storage.Table;
 using ServerlessCommunity.Application.Command.Collect;
 using ServerlessCommunity.Application.Data;
 using ServerlessCommunity.Config;
-using ServerlessCommunity.Core.AzFunc._Extensions;
+using ServerlessCommunity.AzFunc._Extensions;
 
-namespace ServerlessCommunity.Core.AzFunc.Listener
+namespace ServerlessCommunity.AzFunc.Listener
 {
     public static class InitializeListener
     {
