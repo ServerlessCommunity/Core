@@ -2,9 +2,9 @@ using System;
 using Microsoft.WindowsAzure.Storage.Table;
 using ServerlessCommunity.Application.Data;
 
-namespace ServerlessCommunity.Data.AzStorage.Table
+namespace ServerlessCommunity.Data.AzStorage.Table.Model
 {
-    public class Session : TableEntity, ISession
+    public class Venue : TableEntity, IVenue
     {
         [IgnoreProperty]
         public Guid Id
@@ -13,17 +13,11 @@ namespace ServerlessCommunity.Data.AzStorage.Table
             set => RowKey = value.ToString("N");
         }
         
-        [IgnoreProperty]
-        public Guid SpeakerId
-        {
-            get => Guid.Parse(PartitionKey);
-            set => PartitionKey = value.ToString("N");
-        }
-        
         public string Title { get; set; }
-        public string Description { get; set; }
+        public string Address { get; set; }
+        public string MapUrl { get; set; }
 
-        public Session()
+        public Venue()
         {
             PartitionKey = string.Empty;
         }

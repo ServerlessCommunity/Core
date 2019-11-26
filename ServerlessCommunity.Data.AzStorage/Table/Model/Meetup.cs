@@ -2,7 +2,7 @@ using System;
 using Microsoft.WindowsAzure.Storage.Table;
 using ServerlessCommunity.Application.Data;
 
-namespace ServerlessCommunity.Data.AzStorage.Table
+namespace ServerlessCommunity.Data.AzStorage.Table.Model
 {
     public class Meetup : TableEntity, IMeetup
     {

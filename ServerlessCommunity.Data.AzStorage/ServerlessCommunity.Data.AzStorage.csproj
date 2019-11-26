@@ -6,6 +6,7 @@
 
     <ItemGroup>
       <Folder Include="Queue" />
+      <Folder Include="Table\Context" />
     </ItemGroup>
 
     <ItemGroup>

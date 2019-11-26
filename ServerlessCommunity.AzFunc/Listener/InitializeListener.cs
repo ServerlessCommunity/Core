@@ -6,6 +6,7 @@ using ServerlessCommunity.Application.Command.Collect;
 using ServerlessCommunity.Config;
 using ServerlessCommunity.AzFunc._Extensions;
 using ServerlessCommunity.Data.AzStorage.Table;
+using ServerlessCommunity.Data.AzStorage.Table.Model;
 
 namespace ServerlessCommunity.AzFunc.Listener
 {
