@@ -5,7 +5,6 @@ using Microsoft.WindowsAzure.Storage.Table;
 using ServerlessCommunity.Application.Command.Collect;
 using ServerlessCommunity.Config;
 using ServerlessCommunity.Data.AzStorage.Queue.Service;
-using ServerlessCommunity.Data.AzStorage.Table.Model;
 using ServerlessCommunity.Data.AzStorage.Table.Service;
 
 namespace ServerlessCommunity.AzFunc.Listener
