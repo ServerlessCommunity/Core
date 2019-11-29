@@ -5,6 +5,7 @@ namespace ServerlessCommunity.Config
         public const string Meetup = "dataMeetup";
         public const string MeetupPartner = "dataMeetupPartner";
         public const string MeetupSession = "dataMeetupSession";
+        public const string MeetupSessionMaterial = "dataMeetupSessionMaterial";
         public const string Partner = "dataPartner";
         public const string Registration = "dataRegistration";
         public const string Session = "dataSession";

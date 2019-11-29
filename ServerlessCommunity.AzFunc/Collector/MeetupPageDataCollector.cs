@@ -28,6 +28,7 @@ namespace ServerlessCommunity.AzFunc.Collector
             [Table(TableName.Meetup)] CloudTable meetupTable,
             [Table(TableName.MeetupSession)] CloudTable meetupSessionTable,
             [Table(TableName.Session)] CloudTable sessionTable,
+            [Table(TableName.MeetupSessionMaterial)] CloudTable sessionMaterialTable,
             [Table(TableName.Speaker)] CloudTable speakerTable,
             [Table(TableName.Venue)] CloudTable venueTable,
             
@@ -39,6 +40,7 @@ namespace ServerlessCommunity.AzFunc.Collector
             var meetupService = new MeetupService(meetupTable);
             var venueService = new VenueService(venueTable);
             var meetupSessionService = new MeetupSessionService(meetupSessionTable);
+            var meetupSessionMaterialService = new MeetupSessionMaterialService(sessionMaterialTable);
             var sessionService = new SessionService(sessionTable);
             var speakerService = new SpeakerService(speakerTable);
 
@@ -54,17 +56,18 @@ namespace ServerlessCommunity.AzFunc.Collector
             meetupPageViewModel.Meetup = await meetupService.GetMeetupByIdAsync(command.MeetupId);
             meetupPageViewModel.Venue = await venueService.GetVenueByIdAsync(meetupPageViewModel.Meetup.VenueId);
 
-
             var meetupAgendaItems = await meetupSessionService.GetMeetupSessionsByMeetupIdAsync(meetupPageViewModel.Meetup.Id);
             var sessions = await sessionService.GetSessionsByIdsAsync(meetupAgendaItems.Select(x => x.SessionId));
             var speakers = await speakerService.GetSpeakersByIdsAsync(sessions.Select(x => x.SpeakerId));
-
+            var materials = await meetupSessionMaterialService.GetMeetupSessionsMaterialsByMeetupIdAsync(command.MeetupId);
+            
             meetupPageViewModel.Sessions = meetupAgendaItems.Select(x =>
             {
                 var agenda = new MeetupAgenda
                 {
                     MeetupSession = x,
-                    Session = sessions.Single(s => s.Id == x.SessionId)
+                    Session = sessions.Single(s => s.Id == x.SessionId),
+                    Materials = materials.Where(m => m.SessionId == x.SessionId).ToArray()
                 };
 
                 agenda.Speaker = speakers.Single(s => s.Id == agenda.Session.SpeakerId);
