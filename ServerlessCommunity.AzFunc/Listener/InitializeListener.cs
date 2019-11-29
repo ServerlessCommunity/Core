@@ -11,8 +11,8 @@ namespace ServerlessCommunity.AzFunc.Listener
 {
     public static class InitializeListener
     {
-        [FunctionName(nameof(ListenInitializeFunction))]
-        public static async Task ListenInitializeFunction(
+        [FunctionName(nameof(InitializeListener))]
+        public static async Task Run(
             [QueueTrigger(QueueName.ListenInitialize)]string command,
             
             [Table(TableName.Meetup)] CloudTable meetupTable,

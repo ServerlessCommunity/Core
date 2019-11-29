@@ -14,7 +14,7 @@ namespace ServerlessCommunity.AzFunc.Registration
     public static class MeetupRegistration
     {
         [FunctionName(nameof(MeetupRegistration))]
-        public static async Task RegisterAttendeeForMeetupFunction(
+        public static async Task Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "meetup-registration")]HttpRequest req,
             
             [Table(TableName.Registration)] CloudTable registrationTable,

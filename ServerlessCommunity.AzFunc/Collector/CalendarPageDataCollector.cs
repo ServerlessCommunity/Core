@@ -22,7 +22,7 @@ namespace ServerlessCommunity.AzFunc.Collector
         private const string PageDataBlobUrl = "/calendar.json";
         
         [FunctionName(nameof(CalendarPageDataCollector))]
-        public static async Task CollectCalendarPageDataFunction(
+        public static async Task Run(
             [QueueTrigger(QueueName.CollectCalendarPage)]CollectCalendarPageData command,
             
             [Table(TableName.Meetup)] CloudTable meetupTable,

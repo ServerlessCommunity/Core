@@ -26,7 +26,7 @@ namespace ServerlessCommunity.AzFunc.Collector
         public const int TopMeetups = 3;
         
         [FunctionName(nameof(HomePageDataCollector))]
-        public static async Task CollectHomePageDataFunction(
+        public static async Task Run(
             [QueueTrigger(QueueName.CollectHomePage)]CollectHomePageData command,
             
             [Table(TableName.Meetup)] CloudTable meetupTable,

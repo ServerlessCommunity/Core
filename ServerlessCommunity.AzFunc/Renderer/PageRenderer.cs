@@ -14,7 +14,7 @@ namespace ServerlessCommunity.AzFunc.Renderer
     public static class PageRenderer
     {
         [FunctionName(nameof(PageRenderer))]
-        public static async Task RenderPageFunction(
+        public static async Task Run(
             [QueueTrigger(QueueName.RenderPage)]RenderPage command,
             
             [Blob(ContainerName.PageTemplate + "/{" + nameof(RenderPage.TemplateId) + "}", FileAccess.Read)]CloudBlockBlob pageTemplateBlob,

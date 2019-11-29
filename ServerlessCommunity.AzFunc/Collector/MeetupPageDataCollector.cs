@@ -22,7 +22,7 @@ namespace ServerlessCommunity.AzFunc.Collector
         private const string PageDataBlobUrl = "/meetup-{" + nameof(CollectMeetupPageData.MeetupId) + "}.json";
         
         [FunctionName(nameof(MeetupPageDataCollector))]
-        public static async Task CollectMeetupPageDataFunction(
+        public static async Task Run(
             [QueueTrigger(QueueName.CollectMeetupPage)]CollectMeetupPageData command,
             
             [Table(TableName.Meetup)] CloudTable meetupTable,
