@@ -3,10 +3,13 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 using Nustache.Core;
+using ServerlessCommunity.Application.Command.Model.Copy;
 using ServerlessCommunity.Application.Command.Render;
 using ServerlessCommunity.Config;
+using ServerlessCommunity.Data.AzStorage.Queue.Service;
 using ZetaProducerHtmlCompressor.Internal;
 
 namespace ServerlessCommunity.AzFunc.Renderer
@@ -21,10 +24,13 @@ namespace ServerlessCommunity.AzFunc.Renderer
             [Blob(ContainerName.PageData + "/{" + nameof(RenderPage.DataInstanceId) + "}", FileAccess.ReadWrite)]CloudBlockBlob pageDataBlob,
             
             [Blob(ContainerName.WebHost + "/{" + nameof(RenderPage.PublicUrl) + "}", FileAccess.Write)]CloudBlockBlob pageHtmlBlob,
+            [Queue(QueueName.CopyBlob)]CloudQueue copyQueue,
             
             ILogger log)
         {
             log.LogInformation(JsonConvert.SerializeObject(command));
+            
+            var copyQueueService = new CommandQueueService(copyQueue);
 
             var pageData = JsonConvert.DeserializeObject(await pageDataBlob.DownloadTextAsync());
             var pageTemplate = await pageTemplateBlob.DownloadTextAsync();
@@ -46,8 +52,16 @@ namespace ServerlessCommunity.AzFunc.Renderer
             
             pageHtmlBlob.Properties.ContentType = "text/html";
             await pageHtmlBlob.SetPropertiesAsync();
+
+            var copyCommand = new CopyBlob
+            {
+                Path = command.PublicUrl
+            };
             
-            await pageDataBlob.DeleteAsync();
+            await Task.WhenAll(
+                pageDataBlob.DeleteAsync(),
+                copyQueueService.SubmitCommandAsync(copyCommand)
+            );
         }
     }
 }

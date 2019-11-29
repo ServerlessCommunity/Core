@@ -9,5 +9,7 @@
         public const string CollectHomePage = "collect-home";
         
         public const string RenderPage = "render-page";
+        
+        public const string CopyBlob = "copy-blob";
     }
 }
