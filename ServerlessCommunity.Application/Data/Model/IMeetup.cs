@@ -9,11 +9,15 @@ namespace ServerlessCommunity.Application.Data.Model
         int Year { get; set; }
         int Month { get; set; }
         int Day { get; set; }
-
         string DateFormatted { get; }
 
-        string TimeStart { get; set; }
-        string TimeStop { get; set; }
+        int TimeStartHours { get; set; }
+        int TimeStartMinutes { get; set; }
+        string TimeStartFormatted { get; }
+
+        int TimeStopHours { get; set; }
+        int TimeStopMinutes { get; set; }
+        string TimeStopFormatted { get; }
 
         string Title { get; set; }
 

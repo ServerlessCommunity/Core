@@ -21,11 +21,15 @@ namespace ServerlessCommunity.Data.AzStorage.Table.Model
         }
         public int Month { get; set; }
         public int Day { get; set; }
-
-        public string DateFormatted => $"{Year}-{Month}-{Day}";
-
-        public string TimeStart { get; set; }
-        public string TimeStop { get; set; }
+        public string DateFormatted => $"{Year:D4}-{Month:D2}-{Day:D2}";
+        
+        public int TimeStartHours { get; set; }
+        public int TimeStartMinutes { get; set; }
+        public string TimeStartFormatted => $"{TimeStartHours:D2}:{TimeStartMinutes:D2}";
+        
+        public int TimeStopHours { get; set; }
+        public int TimeStopMinutes { get; set; }
+        public string TimeStopFormatted => $"{TimeStopHours:D2}:{TimeStopMinutes:D2}";
 
         public string Title { get; set; }
 

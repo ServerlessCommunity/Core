@@ -11,6 +11,8 @@ namespace ServerlessCommunity.Application.Data.Service
 
         Task<IList<IMeetup>> GetMeetupsUpcomingAsync(int top, DateTime? currentDate = null);
         
+        Task<IList<IMeetup>> GetMeetupsForDateAsync(DateTime? date = null);
+        
         Task<IMeetup> GetMeetupByIdAsync(string id);
         Task<IMeetup> GetMeetupByIdAsync(Guid id);
     }

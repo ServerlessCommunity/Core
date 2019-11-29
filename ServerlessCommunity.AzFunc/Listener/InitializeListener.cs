@@ -33,7 +33,7 @@ namespace ServerlessCommunity.AzFunc.Listener
             {
                 await collectMeetupService.SubmitCommandAsync(new CollectMeetupPageData
                 {
-                    MeetupId = meetup.Id
+                    Id = meetup.Id
                 });
             }
 

@@ -20,25 +20,49 @@ namespace ServerlessCommunity.Data.AzStorage.Table.Service
         public async Task<IList<IMeetup>> GetMeetupsAsync()
         {
             return (await GetQueryResultsAsync())
-                .OrderByDescending(x => x.Year)
-                .ThenByDescending(x => x.Month)
-                .ThenByDescending(x => x.Day)
+                .OrderByDescending(x => x.DateFormatted)
+                .ThenByDescending(x => x.TimeStartFormatted)
                 .Cast<IMeetup>()
                 .ToList();
         }
 
         public async Task<IList<IMeetup>> GetMeetupsUpcomingAsync(int top, DateTime? currentDate = null)
         {
+            currentDate = currentDate ?? DateTime.UtcNow;
+            
             var filter = GenerateCondition(
                 nameof(ITableEntity.PartitionKey),
-                (currentDate ?? DateTime.UtcNow).Year.ToString(),
+                currentDate.Value.Year.ToString(),
                 QueryComparisons.GreaterThanOrEqual);
             
             return (await GetQueryResultsAsync(filter))
+                .Where(x => 
+                    x.Month >= currentDate.Value.Month 
+                    && x.Day >= currentDate.Value.Day)
+                .OrderByDescending(x => x.DateFormatted)
+                .ThenByDescending(x => x.TimeStartFormatted)
                 .Take(top)
-                .OrderByDescending(x => x.Year)
-                .ThenByDescending(x => x.Month)
-                .ThenByDescending(x => x.Day)
+                .Cast<IMeetup>()
+                .ToList();
+        }
+
+        public async Task<IList<IMeetup>> GetMeetupsForDateAsync(DateTime? date = null)
+        {
+            date = date ?? DateTime.UtcNow;
+            
+            var filter = GenerateCondition(
+                nameof(ITableEntity.PartitionKey),
+                date.Value.Year.ToString());
+
+            filter = AppendFilter(filter, TableOperators.And, GenerateConditionInt(
+                nameof(IMeetup.Month),
+                date.Value.Month));
+            
+            filter = AppendFilter(filter, TableOperators.And, GenerateConditionInt(
+                nameof(IMeetup.Day),
+                date.Value.Day));
+            
+            return (await GetQueryResultsAsync(filter))
                 .Cast<IMeetup>()
                 .ToList();
         }

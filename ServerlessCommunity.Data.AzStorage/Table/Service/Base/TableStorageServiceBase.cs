@@ -25,6 +25,14 @@ namespace ServerlessCommunity.Data.AzStorage.Table.Service.Base
                 val);
         }
         
+        protected string GenerateConditionInt(string key, int val, string comparisonOperator = QueryComparisons.Equal)
+        {
+            return TableQuery.GenerateFilterConditionForInt(
+                key,
+                comparisonOperator,
+                val);
+        }
+        
         protected string GenerateConditionBoolean(string key, bool val)
         {
             return TableQuery.GenerateFilterConditionForBool(
@@ -42,7 +50,8 @@ namespace ServerlessCommunity.Data.AzStorage.Table.Service.Base
         
         protected List<string> SplitFilterForSegments(IEnumerable<string> values, string propertyName)
         {
-            var segments = (int) Math.Ceiling((decimal) (values.Count() / FilterSegmentsCount));
+            var segments = (int) Math.Ceiling(values.Count() / (decimal) FilterSegmentsCount);
+            
             var filters = new List<string>(segments);
             for (var i = 0; i < segments; i++)
             {
@@ -105,19 +114,19 @@ namespace ServerlessCommunity.Data.AzStorage.Table.Service.Base
             if (!string.IsNullOrEmpty(partitionKey))
             {
                 filter = AppendFilter(
-                    nameof(ITableEntity.PartitionKey), 
+                    filter, 
                     TableOperators.And, 
-                    partitionKey);
+                    GenerateCondition(nameof(ITableEntity.PartitionKey), partitionKey));
             }
             
             if (!string.IsNullOrEmpty(rowKey))
             {
                 filter = AppendFilter(
-                    nameof(ITableEntity.RowKey), 
+                    filter, 
                     TableOperators.And, 
-                    rowKey);
+                    GenerateCondition(nameof(ITableEntity.RowKey), rowKey));
             }
-
+            
             return (await GetQueryResultsAsync(filter))
                 .SingleOrDefault();
         }
