@@ -7,5 +7,6 @@ namespace ServerlessCommunity.Application.ViewModel.Meetup
         public IMeetupSession MeetupSession { get; set; }
         public ISession Session { get; set; }
         public ISpeaker Speaker { get; set; }
+        public IMeetupSessionMaterial[] Materials { get; set; }
     }
 }
