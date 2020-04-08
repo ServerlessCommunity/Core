@@ -32,6 +32,7 @@ namespace ServerlessCommunity.Data.AzStorage.Table.Model
         public string TimeStopFormatted => $"{TimeStopHours:D2}:{TimeStopMinutes:D2}";
 
         public string Title { get; set; }
+        public string Description { get; set; }
 
         public int? AttendanceFee { get; set; }
         public string AttendanceFeeCurency { get; set; }

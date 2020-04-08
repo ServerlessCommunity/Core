@@ -20,6 +20,7 @@ namespace ServerlessCommunity.Application.Data.Model
         string TimeStopFormatted { get; }
 
         string Title { get; set; }
+        string Description { get; set; }
 
         int? AttendanceFee { get; set; }
         string AttendanceFeeCurency { get; set; }
