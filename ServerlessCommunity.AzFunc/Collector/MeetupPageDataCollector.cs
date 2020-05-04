@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,15 +49,21 @@ namespace ServerlessCommunity.AzFunc.Collector
             var renderService = new CommandQueueService(renderQueue);
             
             var meetupPageViewModel = new MeetupPage();
-            meetupPageViewModel.Registration = new MeetupRegistration
-            {
-                IsOpened = true,
-                Url = null
-            };
             
             meetupPageViewModel.Meetup = await meetupService.GetMeetupByIdAsync(command.MeetupId);
             meetupPageViewModel.Venue = await venueService.GetVenueByIdAsync(meetupPageViewModel.Meetup.VenueId);
 
+            var openedMeetups = new List<string>
+            {
+                //Guid.Parse("059b6187352c4b718e5626e56f6d84a1").ToString("N")
+            };
+            
+            meetupPageViewModel.Registration = new MeetupRegistration
+            {
+                IsOpened = openedMeetups.Contains(command.MeetupId),
+                Url = null
+            };
+            
             var meetupAgendaItems = await meetupSessionService.GetMeetupSessionsByMeetupIdAsync(meetupPageViewModel.Meetup.Id);
             var sessions = await sessionService.GetSessionsByIdsAsync(meetupAgendaItems.Select(x => x.SessionId));
             var speakers = await speakerService.GetSpeakersByIdsAsync(sessions.Select(x => x.SpeakerId));
