@@ -54,7 +54,10 @@ namespace ServerlessCommunity.AzFunc.Collector
             var homePageModel = new HomePage();
 
             var date = DateTime.UtcNow.AddHours(TimeZoneOffset);
-            var meetups = await meetupService.GetMeetupsUpcomingAsync(TopMeetups, date);
+            var meetups = (await meetupService.GetMeetupsUpcomingAsync(TopMeetups, date))
+                .OrderBy(x => x.Year)
+                .ThenBy(x => x.Month)
+                .ThenBy(x => x.Day);
 
             var venues = await venueService.GetVenuesByIdsAsync(meetups.Select(x => x.VenueId));
             var agendaItems = await meetupSessionService.GetMeetupSessionsByMeetupIdsAsync(meetups.Select(x => x.Id));

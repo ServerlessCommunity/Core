@@ -52,7 +52,11 @@ namespace ServerlessCommunity.AzFunc.Collector
                 {
                     year = key,
                     meetups = elements
+                        .OrderBy(x => x.Year)
+                        .ThenBy(x => x.Month)
+                        .ThenBy(x => x.Day)
                 })
+                .OrderBy(x => x.year)
                 .ToDictionary(x => x.year, element => element.meetups);
 
             var meetupSessions = await meetupSessionService.GetMeetupSessionsAsync();
