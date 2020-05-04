@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "name": "renderItem",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "render-home",
+      "connection": ""
+    }
+  ],
+  "scriptFile": "../dist/RenderHome/index.js"
+}

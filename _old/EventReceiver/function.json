@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "name": "eventItem",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "events",
+      "connection": "AzureWebJobsStorage"
+    }
+  ],
+  "scriptFile": "../dist/EventReceiver/index.js"
+}

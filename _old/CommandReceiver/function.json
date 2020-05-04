@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "name": "commandItem",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "commands",
+      "connection": ""
+    }
+  ],
+  "scriptFile": "../dist/CommandReceiver/index.js"
+}

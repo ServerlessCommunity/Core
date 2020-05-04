@@ -1,0 +1,29 @@
+{
+  "bindings": [
+    {
+      "name": "renderItem",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "render-meetup",
+      "connection": "AzureWebJobsStorage"
+    },
+    {
+      "name": "dataMeetup",
+      "type": "table",
+      "tableName": "data-meetup",
+      "rowKey": "{MeetupId}",
+      "take": "1",
+      "connection": "AzureWebJobsStorage",
+      "direction": "in"
+    },
+    {
+      "name": "dataMeetupSessions",
+      "type": "table",
+      "tableName": "data-meetup-session",
+      "partitionKey": "{MeetupId}",
+      "connection": "AzureWebJobsStorage",
+      "direction": "in"
+    }
+  ],
+  "scriptFile": "../dist/RenderMeetup/index.js"
+}
