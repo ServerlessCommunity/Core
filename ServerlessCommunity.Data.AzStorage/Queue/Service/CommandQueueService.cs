@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
@@ -15,12 +16,12 @@ namespace ServerlessCommunity.Data.AzStorage.Queue.Service
             _queue = queue;
         }
 
-        public async Task SubmitCommandAsync(CommandBase command)
+        public async Task SubmitCommandAsync(CommandBase command, TimeSpan? delay = null)
         {
             var payload = JsonConvert.SerializeObject(command);
             var message = new CloudQueueMessage(payload);
 
-            await _queue.AddMessageAsync(message);
+            await _queue.AddMessageAsync(message, null, delay, null, null);
         }
     }
 }

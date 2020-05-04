@@ -1,9 +1,10 @@
+using System;
 using System.Threading.Tasks;
 
 namespace ServerlessCommunity.Application.Command.Service
 {
     public interface ICommandService
     {
-        Task SubmitCommandAsync(CommandBase command);
+        Task SubmitCommandAsync(CommandBase command, TimeSpan? delay = null);
     }
 }
