@@ -7,7 +7,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.2" />
         <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.5" />
-        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
         <PackageReference Include="Nustache" Version="1.16.0.4" />
         <PackageReference Include="ZetaProducerHtmlCompressorStandard" Version="1.0.3" />
     </ItemGroup>
